@@ -1,5 +1,5 @@
 <template>
-  <div class="homeswiper">
+  <div class="home-swiper">
     <swiper>
       <swiper-item v-for="item in banners">
         <a :href="item.link">

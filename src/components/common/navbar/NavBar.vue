@@ -23,11 +23,7 @@ export default {
 .right {
   width: 20%;
 }
-
 .center {
   flex: 1;
-}
-.home-nav {
-  background-color: #fff;
 }
 </style>
