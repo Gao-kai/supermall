@@ -17,7 +17,7 @@ export default {
     },
     pullUpLoad: {
       type: Boolean,
-      dafault: false,
+      default: false,
     },
   },
   data() {
@@ -32,29 +32,31 @@ export default {
       click: true,
       pullUpLoad: this.pullUpLoad,
     });
+
     // 监听滚动的位置
-    this.bscroll.on("scroll", (position) => {
-      // console.log(position);
-      this.$emit("scroll", position);
-    });
-    // 监听滚动至底部上拉加载更多
-    this.bscroll.on("pullingUp", () => {
-      this.$emit("pullingUp");
-    });
+    if (this.probeType == 2 || this.probeType == 3) {
+      this.bscroll.on("scroll", (position) => {
+        this.$emit("scroll", position);
+      });
+    }
+
+    // 监听上拉获取更多
+    if (this.pullUpLoad) {
+      this.bscroll.on("pullingUp", () => {
+        this.$emit("pullingUP");
+      });
+    }
   },
 
   methods: {
     scrollTo(x, y, time = 500) {
-      this.bscroll.scrollTo(x, y, time);
-    },
-    finishPullUp() {
-      // setTimeout(() => {
-      //   this.bscroll.finishPullUp();
-      // }, 5000);
-      this.bscroll.finishPullUp();
+      this.bscroll && this.bscroll.scrollTo(x, y, time);
     },
     refresh() {
-      this.bscroll.refresh();
+      this.bscroll && this.bscroll.refresh();
+    },
+    finishPullUp() {
+      this.bscroll && this.bscroll.finishPullUp();
     },
   },
 };

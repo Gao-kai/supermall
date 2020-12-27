@@ -1,6 +1,6 @@
 <template>
   <div class="goods-item">
-    <img :src="goodsItem.show.img" alt="" />
+    <img :src="goodsItem.show.img" alt="" @load="imageLoad" />
     <div class="goods-info">
       <p class="goods-title">{{ goodsItem.title }}</p>
       <span class="goods-price">{{ goodsItem.price }}</span>
@@ -20,16 +20,20 @@ export default {
       },
     },
   },
+  methods: {
+    imageLoad() {
+      this.$bus.$emit("imageLoad");
+    },
+  },
 };
 </script>
 <style scoped>
 .goods-item {
   width: 48%;
-  margin: 4px 0;
+  margin-bottom: 4px;
 }
 .goods-item img {
   width: 100%;
-  height: 264px;
   border-radius: 4px;
 }
 .goods-info {

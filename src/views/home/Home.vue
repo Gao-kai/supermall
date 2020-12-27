@@ -3,16 +3,28 @@
     <!-- 引入首页导航组件 -->
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
 
+    <!-- 克隆的为满足视觉效果的tab选项卡模块 -->
+    <tab-control
+      :titles="['流行', '新款', '精选']"
+      @tab-click="handleTabClick"
+      ref="clonetabcontrol"
+      class="clonetabcontrol"
+      v-show="isTabFixed"
+    ></tab-control>
+
     <scroll
       class="content"
       ref="scroll"
-      :probe-type="3"
+      :probeType="2"
       @scroll="handleScroll"
-      :pull-up-load="true"
-      @pullingUp="loadMore"
+      :pullUpLoad="true"
+      @pullingUP="loadMore"
     >
       <!-- 引入轮播图组件 -->
-      <home-swiper :banners="banners"></home-swiper>
+      <home-swiper
+        :banners="banners"
+        @swiperImageLoad="swiperImageLoad"
+      ></home-swiper>
       <!-- 引入首页推荐组件 -->
       <home-recommend :recommends="recommends"></home-recommend>
       <!-- 引入流行时尚模块 -->
@@ -20,8 +32,8 @@
       <!-- 添加tab选项卡模块 -->
       <tab-control
         :titles="['流行', '新款', '精选']"
-        class="home-control"
         @tab-click="handleTabClick"
+        ref="tabcontrol"
       ></tab-control>
       <!-- 添加首页商品展示数据 -->
       <goods-list :goods="showGoods"></goods-list>
@@ -48,6 +60,7 @@ import HomeFashion from "./childComps/HomeFashion";
 // ! 非默认导出的模块在导入时记得加大括号{}
 // 引入函数类方法
 import { getHomeMultiData, getHomeGoods } from "network/home";
+import { debounce } from "common/utils.js";
 
 export default {
   name: "Home",
@@ -75,6 +88,8 @@ export default {
       },
       currentType: "pop",
       isShowBackTop: false,
+      tabOffsetTop: 0,
+      isTabFixed: false,
     };
   },
 
@@ -93,6 +108,15 @@ export default {
     this.handleHomeGoods("new");
     this.handleHomeGoods("sell");
   },
+  mounted() {
+    // 进行防抖处理
+    const refresh = debounce(this.$refs.scroll.refresh, 200);
+
+    // 执行图片加载完成的事件后执行刷新事件
+    this.$bus.$on("imageLoad", function () {
+      refresh();
+    });
+  },
 
   methods: {
     /*
@@ -101,7 +125,6 @@ export default {
     // !处理首页大量数据的函数 让处理数据在methods中进行 不卡页面
     handleHomeMultiData() {
       getHomeMultiData().then((res) => {
-        // console.log(res);
         this.banners = res.data.banner.list;
         this.recommends = res.data.recommend.list;
       });
@@ -109,11 +132,11 @@ export default {
     // !处理首页商品数据的函数
     handleHomeGoods(type) {
       const page = this.goods[type].page + 1;
-
       getHomeGoods(type, page).then((res) => {
-        console.log(res);
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
+
+        // 已经完成本次上拉加载更多的数据请求
         this.$refs.scroll.finishPullUp();
       });
     },
@@ -135,20 +158,34 @@ export default {
           this.currentType = "sell";
           break;
       }
+      this.$refs.clonetabcontrol.currentIndex = index;
+      this.$refs.tabcontrol.currentIndex = index;
     },
+
+    // 点击返回顶部按钮组件的事件
     backClick() {
       // this.$refs.scroll拿到的绑定折ref的子组件对象Scroll.vue
-      // this.$refs.scroll.bscroll拿到的是new Bscroll出来的 bscroll对象
-      // bscroll对象上方法scrollTo(x,y)控制滚动位置
       this.$refs.scroll.scrollTo(0, 0, 500);
     },
+
+    // 处理滚动位置是否大于1000的函数,判断isShowBackTop的布尔值
     handleScroll(position) {
+      // 1.根据滚动的y距离判断isShowBackTop的布尔值决定显示及隐藏
       this.isShowBackTop = Math.abs(position.y) > 1000;
+
+      // 2.决定当滚动距离大于taboffsetTop的时候tabControl是否开启固定定位吸附到顶端
+      this.isTabFixed = Math.abs(position.y) > this.tabOffsetTop;
     },
+
+    // 处理上拉获取更多的函数
     loadMore() {
-      console.log(666);
       this.handleHomeGoods(this.currentType);
-      this.$refs.scroll.refresh();
+    },
+
+    // 获取轮播图图片加载完成的函数
+    swiperImageLoad() {
+      // 获取tabControl组件的offsetTop属性
+      this.tabOffsetTop = this.$refs.tabcontrol.$el.offsetTop;
     },
   },
 };
@@ -159,23 +196,17 @@ export default {
 #home {
   height: 100vh;
   position: relative;
-  padding-top: 44px;
 }
 .home-nav {
-  position: fixed;
-  width: 100%;
-  top: 0;
+  position: relative;
   z-index: 10;
   background-color: #ff8198;
   color: #ffffff;
 }
-.home-control {
+.clonetabcontrol {
+  position: relative;
+  z-index: 5;
   background-color: #ffffff;
-  height: 44px;
-  position: sticky;
-  z-index: 9;
-  top: 44px;
-  /* border-top: 10px solid #eeeeee; */
 }
 /* 设置滚动模块的高度及样式 */
 .content {
