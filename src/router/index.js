@@ -7,6 +7,7 @@ const Home = () => import('views/home/Home');
 const Category = () => import('views/category/Category');
 const Shopcart = () => import('views/shopcart/Shopcart');
 const Profile = () => import('views/profile/Profile');
+const Detail = () => import('views/detail/Detail')
 
 
 // 2.安装插件
@@ -29,6 +30,10 @@ const routes = [{
 }, {
   path: '/profile',
   component: Profile,
+}, {
+  // 这里定义的:id是后面在Detail中保存路由跳转时传递过来的iid的占位 可以任意命名
+  path: '/detail/:iid',
+  component: Detail,
 }, ];
 
 const router = new VueRouter({
@@ -38,3 +43,9 @@ const router = new VueRouter({
 
 // 4.导出router对象 去main.js入口文件中的Vue根组件上挂载
 export default router;
+
+// 解决重复点击路由会报错的bug
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}

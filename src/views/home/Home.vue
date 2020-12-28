@@ -90,6 +90,7 @@ export default {
       isShowBackTop: false,
       tabOffsetTop: 0,
       isTabFixed: false,
+      leavePositionY: 0,
     };
   },
 
@@ -97,6 +98,15 @@ export default {
     showGoods() {
       return this.goods[this.currentType].list;
     },
+  },
+  activated() {
+    this.$refs.scroll.scrollTo(0, this.leavePositionY, 0);
+    this.$refs.scroll.refresh();
+  },
+  deactivated() {
+    this.leavePositionY = this.$refs.scroll.getScrollY();
+    // 获取当前页面在y轴上滚动距离
+    // console.log(this.$refs.scroll.getScrollY());
   },
 
   created() {
@@ -116,6 +126,9 @@ export default {
     this.$bus.$on("imageLoad", function () {
       refresh();
     });
+  },
+  destroyed() {
+    console.log("首页已经被销毁");
   },
 
   methods: {

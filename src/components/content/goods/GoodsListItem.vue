@@ -1,5 +1,5 @@
 <template>
-  <div class="goods-item">
+  <div class="goods-item" @click="itemClick">
     <img :src="goodsItem.show.img" alt="" @load="imageLoad" />
     <div class="goods-info">
       <p class="goods-title">{{ goodsItem.title }}</p>
@@ -23,6 +23,11 @@ export default {
   methods: {
     imageLoad() {
       this.$bus.$emit("imageLoad");
+    },
+    itemClick() {
+      // 这里的iid是从父组件遍历出来的数据传递过来的，是服务器获取的 不可随意变更 必须和服务器对应
+      this.$router.push("/detail/" + this.goodsItem.iid);
+      // console.log(this.goodsItem);
     },
   },
 };

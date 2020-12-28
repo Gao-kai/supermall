@@ -41,20 +41,10 @@ export default {
     },
   },
 
-  // computed: {
-  //   isActive() {
-  //     // 判断当前被点击的组件的path是不是父组件传递过来的path
-  // 假设当前点击的是我的，那么this.$route.path就是"/profile"
-  //  父组件传递过来的path值也是"/profile" 如果前者中包含后者字符串 那么就返回-1
-  //     return this.$route.path.indexOf(this.path);
-  //   },
-  // },
-
   methods: {
+    // 设置点击之后路由跳转
     itemClick() {
       this.$router.push(this.path);
-      // console.log(this.$router);
-      // console.log(this.$route);
     },
   },
 };
