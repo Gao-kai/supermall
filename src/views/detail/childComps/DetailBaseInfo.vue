@@ -21,18 +21,6 @@
         <span class="item-info">{{goodsInfo.services[index - 1].name}}</span>
       </div>
     </div>
-    <ul>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-    </ul>
   </div>
 
 </template>

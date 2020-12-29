@@ -1,40 +1,22 @@
 <template>
   <div id="home">
     <!-- 引入首页导航组件 -->
-    <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
+    <nav-bar class="home-nav">
+      <div slot="center">购物街</div>
+    </nav-bar>
 
     <!-- 克隆的为满足视觉效果的tab选项卡模块 -->
-    <tab-control
-      :titles="['流行', '新款', '精选']"
-      @tab-click="handleTabClick"
-      ref="clonetabcontrol"
-      class="clonetabcontrol"
-      v-show="isTabFixed"
-    ></tab-control>
+    <tab-control :titles="['流行', '新款', '精选']" @tab-click="handleTabClick" ref="clonetabcontrol" class="clonetabcontrol" v-show="isTabFixed"></tab-control>
 
-    <scroll
-      class="content"
-      ref="scroll"
-      :probeType="2"
-      @scroll="handleScroll"
-      :pullUpLoad="true"
-      @pullingUP="loadMore"
-    >
+    <scroll class="content" ref="scroll" :probeType="2" @scroll="handleScroll" :pullUpLoad="true" @pullingUP="loadMore">
       <!-- 引入轮播图组件 -->
-      <home-swiper
-        :banners="banners"
-        @swiperImageLoad="swiperImageLoad"
-      ></home-swiper>
+      <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad"></home-swiper>
       <!-- 引入首页推荐组件 -->
       <home-recommend :recommends="recommends"></home-recommend>
       <!-- 引入流行时尚模块 -->
       <home-fashion> </home-fashion>
       <!-- 添加tab选项卡模块 -->
-      <tab-control
-        :titles="['流行', '新款', '精选']"
-        @tab-click="handleTabClick"
-        ref="tabcontrol"
-      ></tab-control>
+      <tab-control :titles="['流行', '新款', '精选']" @tab-click="handleTabClick" ref="tabcontrol"></tab-control>
       <!-- 添加首页商品展示数据 -->
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
@@ -121,7 +103,6 @@ export default {
   mounted() {
     // 进行防抖处理
     const refresh = debounce(this.$refs.scroll.refresh, 200);
-
     // 执行图片加载完成的事件后执行刷新事件
     this.$bus.$on("imageLoad", function () {
       refresh();

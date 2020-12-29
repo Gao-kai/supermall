@@ -1,7 +1,7 @@
 <template>
   <swiper class="detail-swiper">
     <swiper-item class="swiper-item" v-for="(item, index) in topImages">
-      <img :src="item" alt="" />
+      <img :src="item" @load="swiperLoad" alt="" />
     </swiper-item>
   </swiper>
 </template>
@@ -23,6 +23,24 @@ export default {
       },
     },
   },
+  data() {
+    return {
+      counter: 0,
+      swiperImageLength: 0,
+    }
+  },
+  methods: {
+    swiperLoad() {
+      if (++this.counter === this.swiperImageLength) {
+        this.$emit('swiper-image-length');
+      }
+    }
+  },
+  watch: {
+    swiperImageLength() {
+      this.swiperImageLength = topImages.length;
+    }
+  }
 };
 </script>
 

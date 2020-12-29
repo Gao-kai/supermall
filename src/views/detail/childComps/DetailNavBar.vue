@@ -1,17 +1,11 @@
 <template>
   <div>
-    <nav-bar>
+    <nav-bar class="detail-nav-bar">
       <div slot="left" class="back-arrow" @click="backClick">
         <img src="~assets/img/common/back.svg" alt="" />
       </div>
       <div slot="center" class="title">
-        <span
-          v-for="(item, index) in detailTitles"
-          :key="index"
-          class="title-item"
-          @click="titleItemClick(index)"
-          :class="{ active: index === currentIndex }"
-        >
+        <span v-for="(item, index) in detailTitles" :key="index" class="title-item" @click="titleItemClick(index)" :class="{ active: index === currentIndex }">
           {{ item }}
         </span>
       </div>
@@ -42,6 +36,9 @@ export default {
 };
 </script>
 <style scoped>
+.detail-nav-bar {
+  position: relative;
+}
 .title {
   display: flex;
   font-size: 14px;

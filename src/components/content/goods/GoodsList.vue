@@ -1,5 +1,5 @@
 <template>
-  <div class="goods-list clearfix">
+  <div class="goods-list">
     <goods-list-item v-for="item in goods" :goodsItem="item"></goods-list-item>
   </div>
 </template>
