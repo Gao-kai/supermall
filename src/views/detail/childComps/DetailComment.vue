@@ -52,15 +52,15 @@ export default {
 </script>
 <style scoped>
 .detail-comment {
-  border-top: 6px solid #eeeeee;
-  padding: 20px 8px 15px;
+  padding: 0px 8px;
   border-bottom: 6px solid #eeeeee;
+  margin-bottom: 6px;
 }
 .title {
   border-bottom: 1px solid #eeeeee;
   display: flex;
   color: #000;
-  padding-bottom: 15px;
+  padding: 15px 0;
   font-size: 14px;
 }
 .title span {

@@ -4,7 +4,7 @@
     <div class="info-title">{{ goodsInfo.title }}</div>
     <!-- 展示商品价格 -->
     <div class="info-price">
-      <span class="new-price">{{ goodsInfo.newPrice }}</span>
+      <span class="real-price">{{ '￥'+goodsInfo.realPrice }}</span>
       <span class="old-price">{{ '￥'+ goodsInfo.oldPrice }}</span>
       <span v-if="goodsInfo.discount" class="discount">{{goodsInfo.discount}}</span>
     </div>
@@ -51,7 +51,7 @@ export default {
   margin-top: 10px;
   position: relative;
 }
-.new-price {
+.real-price {
   font-size: 28px;
   color: #ff6b7f;
 }

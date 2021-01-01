@@ -33,7 +33,8 @@ export default {
   },
   methods: {
     imgLoad() {
-      this.$emit('img-load');
+      // 发射事件给父组件接收 父组件利用混入对象处理
+      this.$emit('detailgoodsimgload');
       //   ++this.counter 先给自己自加1 然后将计算的结果拿去对比
       //   意思就是每当有一张图片加载完成触发了load事件，就给counter + 1，然后拿到 + 1的结果和当前数组中的图片个数进行对比
       // if (this.length === ++this.counter) {
@@ -43,7 +44,7 @@ export default {
   },
   watch: {
     detailGoodsInfo() {
-      // 获取图片的个数
+      // 方便获取图片的个数 因为detailGoodsInfo默认传进来的是空对象{} 其实这里只获取一次
       this.imgLength = this.detailGoodsInfo.detailImage[0].list.length;
     }
   }

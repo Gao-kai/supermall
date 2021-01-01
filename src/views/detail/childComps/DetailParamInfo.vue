@@ -37,7 +37,8 @@ export default {
 </script>
 <style scoped>
 .detail-parma-info {
-  padding: 20px 8px 0;
+  padding: 0 8px;
+  border-bottom: 6px solid #eeeeee;
 }
 /* 顶部 */
 .info-size {

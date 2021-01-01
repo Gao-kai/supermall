@@ -31,7 +31,7 @@ const routes = [{
   path: '/profile',
   component: Profile,
 }, {
-  // 这里定义的:id是后面在Detail中保存路由跳转时传递过来的iid的占位 可以任意命名
+  // 这里定义的:iid是后面在Detail中保存路由跳转时传递过来的iid的占位 可以任意命名
   path: '/detail/:iid',
   component: Detail,
 }, ];

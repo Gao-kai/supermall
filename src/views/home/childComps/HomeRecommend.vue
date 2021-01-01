@@ -2,7 +2,7 @@
   <div class="home-recommend">
     <div v-for="item in recommends" class="home-recommend-item">
       <a :href="item.link">
-        <img :src="item.image" alt="" />
+        <img :src="item.image" @load="recommendImgLoad" alt="" />
         <p>{{ item.title }}</p>
       </a>
     </div>
@@ -12,6 +12,11 @@
 <script>
 export default {
   name: "HomeRecommend",
+  data() {
+    return {
+      isLoad: false,
+    }
+  },
   props: {
     recommends: {
       type: Array,
@@ -20,6 +25,14 @@ export default {
       },
     },
   },
+  methods: {
+    recommendImgLoad() {
+      if (!this.isLoad) {
+        this.$emit("recommendImgLoad");
+        this.isLoad = true;
+      }
+    }
+  }
 };
 </script>
 <style scoped>

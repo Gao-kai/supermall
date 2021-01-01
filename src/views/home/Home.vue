@@ -12,9 +12,9 @@
       <!-- 引入轮播图组件 -->
       <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad"></home-swiper>
       <!-- 引入首页推荐组件 -->
-      <home-recommend :recommends="recommends"></home-recommend>
+      <home-recommend :recommends="recommends" @recommendImgLoad="recommendImgLoad"></home-recommend>
       <!-- 引入流行时尚模块 -->
-      <home-fashion> </home-fashion>
+      <home-fashion @fashionImgLoad="fashionImgLoad"> </home-fashion>
       <!-- 添加tab选项卡模块 -->
       <tab-control :titles="['流行', '新款', '精选']" @tab-click="handleTabClick" ref="tabcontrol"></tab-control>
       <!-- 添加首页商品展示数据 -->
@@ -22,7 +22,7 @@
     </scroll>
 
     <!-- 添加回到顶部按钮 -->
-    <backtop @click.native="backClick" v-show="isShowBackTop"></backtop>
+    <backtop @click.native="backtopClick" v-show="isShowBackTop"></backtop>
   </div>
 </template>
 
@@ -32,7 +32,7 @@ import NavBar from "components/common/navbar/NavBar";
 import TabControl from "components/content/tabControl/TabControl";
 import GoodsList from "components/content/goods/GoodsList";
 import Scroll from "components/common/scroll/Scroll";
-import Backtop from "components/content/backtop/Backtop";
+// import Backtop from "components/content/backtop/Backtop"; 通过mixin混入实现
 
 // 引入子组件
 import HomeSwiper from "./childComps/HomeSwiper";
@@ -43,6 +43,7 @@ import HomeFashion from "./childComps/HomeFashion";
 // 引入函数类方法
 import { getHomeMultiData, getHomeGoods } from "network/home";
 import { debounce } from "common/utils.js";
+import { imgListenerMixin, backTopMixin } from "common/mixin.js"
 
 export default {
   name: "Home",
@@ -52,12 +53,13 @@ export default {
     TabControl,
     GoodsList,
     Scroll,
-    Backtop,
 
     HomeSwiper,
     HomeRecommend,
     HomeFashion,
   },
+
+  mixins: [imgListenerMixin, backTopMixin],
 
   data() {
     return {
@@ -69,7 +71,6 @@ export default {
         sell: { page: 0, list: [] },
       },
       currentType: "pop",
-      isShowBackTop: false,
       tabOffsetTop: 0,
       isTabFixed: false,
       leavePositionY: 0,
@@ -86,11 +87,12 @@ export default {
     this.$refs.scroll.refresh();
   },
   deactivated() {
+    // 1.离开时保存滚动y值 用于返回时定位到浏览位置 scroll对象上有此方法
     this.leavePositionY = this.$refs.scroll.getScrollY();
-    // 获取当前页面在y轴上滚动距离
-    // console.log(this.$refs.scroll.getScrollY());
-  },
 
+    // 2.取消来自事件总线的事件监听 只写一个事件名称意味着所有组件关于imgload事件的监听都会被取消
+    this.$bus.$off('imgload', this.ImgListener)
+  },
   created() {
     //! 发送网络请求首页大量数据
     this.handleHomeMultiData();
@@ -101,15 +103,7 @@ export default {
     this.handleHomeGoods("sell");
   },
   mounted() {
-    // 进行防抖处理
-    const refresh = debounce(this.$refs.scroll.refresh, 200);
-    // 执行图片加载完成的事件后执行刷新事件
-    this.$bus.$on("imageLoad", function () {
-      refresh();
-    });
-  },
-  destroyed() {
-    console.log("首页已经被销毁");
+
   },
 
   methods: {
@@ -156,12 +150,6 @@ export default {
       this.$refs.tabcontrol.currentIndex = index;
     },
 
-    // 点击返回顶部按钮组件的事件
-    backClick() {
-      // this.$refs.scroll拿到的绑定折ref的子组件对象Scroll.vue
-      this.$refs.scroll.scrollTo(0, 0, 500);
-    },
-
     // 处理滚动位置是否大于1000的函数,判断isShowBackTop的布尔值
     handleScroll(position) {
       // 1.根据滚动的y距离判断isShowBackTop的布尔值决定显示及隐藏
@@ -179,6 +167,14 @@ export default {
     // 获取轮播图图片加载完成的函数
     swiperImageLoad() {
       // 获取tabControl组件的offsetTop属性
+      this.tabOffsetTop = this.$refs.tabcontrol.$el.offsetTop;
+    },
+    // 获取fashion组件加载完成时的offsetTop属性
+    fashionImgLoad() {
+      this.tabOffsetTop = this.$refs.tabcontrol.$el.offsetTop;
+    },
+    // 获取recommend组件加载完成时的offsetTop属性
+    recommendImgLoad() {
       this.tabOffsetTop = this.$refs.tabcontrol.$el.offsetTop;
     },
   },

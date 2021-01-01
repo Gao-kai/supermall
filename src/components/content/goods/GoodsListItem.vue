@@ -28,13 +28,20 @@ export default {
     }
   },
   methods: {
+
     imageLoad() {
-      console.log(this.$route.path);
-      if (this.$route.path.indexOf('/home') !== -1) {
-        this.$bus.$emit("imageLoad");
-      } else if (this.$route.path.indexOf('/detail') !== -1) {
-        this.$emit('img-load');
-      }
+      // 方案二：mixin混入 可行 当时必须保证发出的都是同一个事件 不同组件中接收也是同一个事件
+      this.$bus.$emit('imgload');
+
+
+      // 方案一：路由方案 可行
+      // if (this.$route.path.indexOf('/home') !== -1) {
+      //   // 当在home路由下的时候，每加载完一张图片发射给事件总线 在home组件中执行刷新可滚动高度
+      //   this.$bus.$emit("homeimgload");
+      // } else if (this.$route.path.indexOf('/detail') !== -1) {
+      //   // 当在detail路由下的时候，每加载完一张图片发射给事件总选 在detail组件中执行刷新可滚动高度
+      //   this.$bus.$emit('detailimgload');
+      // }
 
     },
     itemClick() {
