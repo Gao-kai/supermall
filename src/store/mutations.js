@@ -1,8 +1,14 @@
+import {
+  ADD_COUNTER,
+  ADD_TO_CART
+} from "./mutation-type"
+
 export default {
-  addCounter(state, payLoad) {
+  [ADD_COUNTER](state, payLoad) {
     payLoad.count += 1;
   },
-  addToCart(state, payLoad) {
+  [ADD_TO_CART](state, payLoad) {
+    payLoad.isChecked = true;
     state.cartList.push(payLoad);
   }
 }

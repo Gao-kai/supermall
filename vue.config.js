@@ -1,4 +1,5 @@
 module.exports = {
+  runtimeCompiler: true,
   configureWebpack: {
     resolve: {
       alias: {
@@ -9,5 +10,5 @@ module.exports = {
         'views': '@/views',
       }
     }
-  }
+  },
 }
